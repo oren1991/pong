@@ -6,6 +6,7 @@ let trackButton = document.getElementById("trackbutton");
 let nextImageButton = document.getElementById("nextimagebutton");
 let updateNote = document.getElementById("updatenote");
 
+
 let imgindex = 1
 let isVideo = false;
 let model = null;
@@ -14,7 +15,7 @@ let model = null;
 // video.height = 400
 
 const modelParams = {
-    flipHorizontal: true,   // flip e.g for video  
+    flipHorizontal: true,   // flip e.g for video
     maxNumBoxes: 20,        // maximum number of boxes to detect
     iouThreshold: 0.5,      // ioU threshold for non-max suppression
     scoreThreshold: 0.6,    // confidence threshold for predictions.

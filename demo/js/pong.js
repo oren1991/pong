@@ -3,11 +3,74 @@ const canvas = document.getElementById("canvas");
 const context = canvas.getContext("2d");
 let trackButton = document.getElementById("trackbutton");
 let updateNote = document.getElementById("updatenote");
+var pictureArray = [];
+var currentPictureIndex = 0;
+var animTimer = new timerObject(300,0.5,loadNextImg)
+
+function startPictureAnim(){
+  animTimer.start()
+}
+
+function loadNextImg(){
+  maxInd = pictureArray.length - 1;
+  if (maxInd == -1) {
+    return
+  }
+  if (currentPictureIndex == maxInd) {
+    currentPictureIndex = 0;
+  } else {
+    currentPictureIndex +=1;
+  }
+  loadImg(pictureArray[currentPictureIndex])
+}
+
+function loadImg(img){
+  $('.pause-img-container img').prop('src', img);
+
+}
+
+function stopPictureAnim(){
+  animTimer.stop()
+}
+
+function takePicture() {
+  var img = canvas.toDataURL("image/png")
+  console.log("saved");
+  pictureArray.push(img);
+}
+
+function setTimer(){
+  console.log("Szia");
+  var timer = new timerObject(10, 2, takePicture)
+  timer.start();
+}
+
+function timerObject(timeInSeconds, intervalInSeconds, callback){
+  this.timeInSeconds = timeInSeconds
+  this.intervalInSeconds = intervalInSeconds
+  this.callback = callback
+
+  var that = this;
+  this.start = function(){
+    this.interval = setInterval(callback, this.intervalInSeconds * 1000);
+    this.mainInterval = setInterval(function(){
+      that.stop();
+    }, this.timeInSeconds * 1000)
+  }
+
+  this.stop = function(){
+    console.log("stop")
+    clearInterval(that.interval)
+    clearInterval(that.mainInterval)
+  }
+}
 
 let imgindex = 1
 let isVideo = false;
 let model = null;
 let videoInterval = 100
+
+const BLUE_COLOR = '#005aeb'
 
 // video.width = 500
 // video.height = 400
@@ -20,7 +83,7 @@ $(".overlaycenter").animate({
 }, pauseGameAnimationDuration, function () {});
 
 const modelParams = {
-    flipHorizontal: true, // flip e.g for video  
+    flipHorizontal: true, // flip e.g for video
     maxNumBoxes: 1, // maximum number of boxes to detect
     iouThreshold: 0.5, // ioU threshold for non-max suppression
     scoreThreshold: 0.6, // confidence threshold for predictions.
@@ -33,6 +96,7 @@ function startVideo() {
             updateNote.innerText = "Now tracking"
             isVideo = true
             runDetection()
+            setTimer()
         } else {
             updateNote.innerText = "Please enable video"
         }
@@ -161,7 +225,9 @@ planck.testbed(function (testbed) {
     var pl = planck;
     Vec2 = pl.Vec2;
 
-    var world = pl.World(Vec2(0, -30));
+    var world = pl.World({
+      gravity: Vec2(0, -30)
+    });
     var BEAD = 4
     var PADDLE = 5
 
@@ -207,12 +273,18 @@ planck.testbed(function (testbed) {
         $(scoreDiv).addClass("classname")
             .text("bingo")
             .appendTo($("body")) //main div
-    });
+            setBackgroundColor()
+
+        });
 
     function start() {
         addUI()
     }
 
+    function setBackgroundColor(){
+      console.log('Hello')
+      $('canvas').first().css('background-color','#fff');
+    }
 
 
     // Remove paddles that are no longer in frame.
@@ -291,16 +363,21 @@ planck.testbed(function (testbed) {
     function pauseGamePlay() {
         pauseGame = !pauseGame
         if (pauseGame) {
+            startPictureAnim();
             paddle.setLinearVelocity(Vec2(0, 0))
             $(".pauseoverlay").show()
-            $(".overlaycenter").text("Game Paused")
+            $(".overlaycenter").text("Game Over")
             $(".overlaycenter").animate({
                 opacity: 1,
                 fontSize: "4vw"
             }, pauseGameAnimationDuration, function () {});
         } else {
+            stopPictureAnim();
             paddle.setLinearVelocity(Vec2(3, 0))
-
+            playerScore = 0
+            updateScoreBox(0);
+            pictureArray = [];
+            setTimer();
             $(".overlaycenter").animate({
                 opacity: 0,
                 fontSize: "0vw"
@@ -359,6 +436,8 @@ planck.testbed(function (testbed) {
         var ground = world.createBody();
         var groundY = -(0.3 * SPACE_HEIGHT)
         // ground.createFixture(pl.Edge(Vec2(-(0.95 * SPACE_WIDTH / 2), groundY), Vec2((0.95 * SPACE_WIDTH / 2), groundY)), 0.0);
+
+        setBackgroundColor()
     }
 
     function addPaddle() {
@@ -370,12 +449,12 @@ planck.testbed(function (testbed) {
         })
         paddleLines = [
             [1.8, -0.1],
-            [1.8, 0.1],
-            [1.2, 0.4],
-            [0.4, 0.6],
-            [-2.4, 0.6],
-            [-3.2, 0.4],
-            [-3.8, 0.1],
+            [1.8, 0.05],
+            [1.2, 0.2],
+            [0.4, 0.3],
+            [-2.4, 0.3],
+            [-3.2, 0.2],
+            [-3.8, 0.05],
             [-3.8, -0.1]
         ]
 
@@ -387,7 +466,7 @@ planck.testbed(function (testbed) {
 
         paddle.createFixture(pl.Polygon(paddlePath), paddleFixedDef)
         paddle.render = {
-            fill: '#ff8800',
+            fill: BLUE_COLOR,
             stroke: '#000000'
         }
     }

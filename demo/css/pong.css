@@ -6,7 +6,7 @@ body {
     position: absolute;
     margin: 2vw;
     top: 0.0vw;
-    color: #fff;
+    color: #000;
 }
 
 .floatleft {
@@ -23,12 +23,23 @@ body {
 
 .scorebox {
     height: 100%;
-    border-bottom: 0.1vw solid #ff8800;
+    border-bottom: 0.1vw solid #005aeb;
     padding: 1vw;
     font-size: 1.3vw;
     font-family: Verdana, Geneva, Tahoma, sans-serif;
-    color: #fff;
+    color: #000;
     margin: 0vw 0vw 0vw 0vw;
+}
+
+.pause-img-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin-top: -20vh;
+  margin-left: -20vw;
+  font-weight: bold;
+  max-width: 80vw;
+  min-width: 80vw;
 }
 
 .iblock {
@@ -63,7 +74,7 @@ body {
 }
 
 .border {
-    border: 2px solid #fff;
+    border: 2px solid #000;
 }
 
 .settingsswitches {
@@ -106,7 +117,7 @@ body {
     position: absolute;
     top: 50%;
     left: 50%;
-    margin-top: -3vw;
+    margin-top: -40vh;
     margin-left: -15vw;
     font-size: 0vw;
     color: #ff8800;
@@ -156,11 +167,11 @@ body {
 }
 
 input:checked+.slider {
-    background-color: #ff8800;
+    background-color: #005aeb;
 }
 
 input:focus+.slider {
-    box-shadow: 0 0 1px #ff8800;
+    box-shadow: 0 0 1px #005aeb;
 }
 
 input:checked+.slider:before {
@@ -198,7 +209,7 @@ input:checked+.slider:before {
 
 .updatenote{
     padding: 12px;
-    background: #ff8800;
+    background: #005aeb;
     color: #fff;
     /* font-weight: bold; */
 
