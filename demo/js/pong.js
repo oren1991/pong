@@ -5,7 +5,7 @@ let trackButton = document.getElementById("trackbutton");
 let updateNote = document.getElementById("updatenote");
 var pictureArray = [];
 var currentPictureIndex = 0;
-var animTimer = new timerObject(300,0.5,loadNextImg)
+var animTimer = new timerObject(300,0.5,loadNextImg, null)
 
 function startPictureAnim(){
   animTimer.start()
@@ -41,14 +41,17 @@ function takePicture() {
 
 function setTimer(){
   console.log("Szia");
-  var timer = new timerObject(10, 2, takePicture)
+  var timer = new timerObject(10, 2, takePicture, function(){
+    $(document).trigger('keyup', 32)
+  })
   timer.start();
 }
 
-function timerObject(timeInSeconds, intervalInSeconds, callback){
+function timerObject(timeInSeconds, intervalInSeconds, callback, last_callback){
   this.timeInSeconds = timeInSeconds
   this.intervalInSeconds = intervalInSeconds
   this.callback = callback
+  this.last_callback = last_callback
 
   var that = this;
   this.start = function(){
@@ -62,6 +65,9 @@ function timerObject(timeInSeconds, intervalInSeconds, callback){
     console.log("stop")
     clearInterval(that.interval)
     clearInterval(that.mainInterval)
+    if(that.last_callback){
+      that.last_callback()
+    }
   }
 }
 
@@ -366,7 +372,7 @@ planck.testbed(function (testbed) {
             startPictureAnim();
             paddle.setLinearVelocity(Vec2(0, 0))
             $(".pauseoverlay").show()
-            $(".overlaycenter").text("Game Over")
+            $(".overlaycenter").text("Game Over: \n Score: " + playerScore)
             $(".overlaycenter").animate({
                 opacity: 1,
                 fontSize: "4vw"
@@ -422,8 +428,11 @@ planck.testbed(function (testbed) {
         });
 
         // Add keypress event listener to pause game
-        document.onkeyup = function (e) {
+        document.onkeyup = function (e, passedCode) {
             var key = e.keyCode ? e.keyCode : e.which;
+            if (!key && passedCode){
+              key = passedCode
+            }
             if (key == 32) {
                 console.log("spacebar pressed")
                 pauseGamePlay()
