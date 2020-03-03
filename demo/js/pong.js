@@ -41,7 +41,7 @@ function takePicture() {
 
 function setTimer(){
   console.log("Szia");
-  var timer = new timerObject(10, 2, takePicture, function(){
+  var timer = new timerObject(30, 5, takePicture, function(){
     $(document).trigger('keyup', 32)
   })
   timer.start();
@@ -289,7 +289,7 @@ planck.testbed(function (testbed) {
 
     function setBackgroundColor(){
       console.log('Hello')
-      $('canvas').first().css('background-color','#fff');
+      $('canvas').first().css('background-color','#000');
     }
 
 
@@ -372,7 +372,7 @@ planck.testbed(function (testbed) {
             startPictureAnim();
             paddle.setLinearVelocity(Vec2(0, 0))
             $(".pauseoverlay").show()
-            $(".overlaycenter").text("Game Over: \n Score: " + playerScore)
+            $(".overlaycenter").text("Game Over, Score: " + playerScore)
             $(".overlaycenter").animate({
                 opacity: 1,
                 fontSize: "4vw"
