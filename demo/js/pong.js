@@ -48,7 +48,7 @@ function setTimer(){
   console.log("Szia");
   var timeInSec = 30
   timeLeft = timeInSec;
-  var timerShow = new timerObject(timeInSec + 1, 1, function(){
+  var timerShow = new timerObject(timeInSec - 1, 1, function(){
     timeLeft -= 1
     updateTimerUI(timeLeft)
   })
