@@ -6,9 +6,14 @@ let updateNote = document.getElementById("updatenote");
 var pictureArray = [];
 var currentPictureIndex = 0;
 var animTimer = new timerObject(300,0.5,loadNextImg, null)
+var timeLeft = 0;
 
 function startPictureAnim(){
   animTimer.start()
+}
+
+function updateTimerUI(t){
+  $('#mainTimer').text(t + ' seconds left');
 }
 
 function loadNextImg(){
@@ -41,10 +46,21 @@ function takePicture() {
 
 function setTimer(){
   console.log("Szia");
-  var timer = new timerObject(30, 5, takePicture, function(){
-    $(document).trigger('keyup', 32)
+  var timeInSec = 30
+  timeLeft = timeInSec;
+  var timerShow = new timerObject(timeInSec + 1, 1, function(){
+    timeLeft -= 1
+    updateTimerUI(timeLeft)
   })
+
+  var timer = new timerObject(timeInSec, 5, takePicture, function(){
+    $(document).trigger('keyup', 32)
+    $('#mainTimer').hide()
+  })
+  $('#mainTimer').show()
+
   timer.start();
+  timerShow.start();
 }
 
 function timerObject(timeInSeconds, intervalInSeconds, callback, last_callback){
@@ -372,7 +388,8 @@ planck.testbed(function (testbed) {
             startPictureAnim();
             paddle.setLinearVelocity(Vec2(0, 0))
             $(".pauseoverlay").show()
-            $(".overlaycenter").text("Game Over, Score: " + playerScore)
+            $(".overlaycenter").text("Congratulations!")
+            $(".overlaycenter").append('<p style="font-size: 4vw;margin-top: 20px">Score: '+ playerScore +'</p>')
             $(".overlaycenter").animate({
                 opacity: 1,
                 fontSize: "4vw"
